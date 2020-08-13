@@ -2,7 +2,7 @@ import React, { useState, useEffect } from 'react'
 import PersonForm from './components/PersonForm'
 import Persons from './components/Persons'
 import Filter from './components/Filter'
-import numbers from './components/Numbers'
+import numbers from './services/persons'
 import Notification from './components/Notification'
 
 const App = () => {
@@ -95,7 +95,7 @@ const App = () => {
     <div>
       <Notification message={errorMessage} success={successStatus} />
       <h2>Phonebook</h2>    
-      <Filter filter={filter} handleFilter={handleFilter} />
+      filter: <Filter filter={filter} handleFilter={handleFilter} />
       <PersonForm newName={newName} newNumber={newNumber} handleType={handleType} handleNumber={handleNumber} addPerson={addPerson}/>
       <h2>Numbers</h2>
       <ul>
