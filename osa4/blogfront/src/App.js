@@ -7,8 +7,8 @@ import BlogForm from './components/BlogForm'
 
 const App = () => {
   
-  const [blogs, setBlogs] = useState([ 
-  {author:'auto',
+  const [blog, setBlogs] = useState([ 
+  /*{author:'auto',
   title:'on se',
   url:'jep',
   votes:5},
@@ -19,7 +19,7 @@ const App = () => {
   {author:'auto',
   title:'on se',
   url:'jep',
-  votes:5}])
+  votes:5}*/])
   const [newAuthor, setNewAuthor] = useState('auth')
   const [newTitle, setNewTitle] = useState('tit')
   const [newUrl, setNewUrl] = useState('ura')
@@ -30,12 +30,18 @@ const App = () => {
       author: newAuthor,
       title: newTitle,
       url: newUrl,
-    votes:0,
+      likes: 0,
     }
     //creating in backend
 
-    setBlogs(blogs.concat(newBlog))
+    setBlogs(blog.concat(newBlog))
   }
+
+  const hook = () => {
+    blogs.getAll().then(response => setBlogs(response))
+  }
+
+  useEffect(hook, [])
 
   const handleAuthor = event => setNewAuthor(event.target.value)
   const handleTitle = event => setNewTitle(event.target.value)
@@ -49,8 +55,8 @@ const App = () => {
         {console.log('url' + newUrl + ' author ' + newAuthor + ' title '+ newTitle)}
         <BlogForm newAuthor = {newAuthor} handleAuthor={handleAuthor} newTitle = {newTitle} handleTitle={handleTitle} url = {newUrl} handleUrl={handleUrl} addBlog={addBlog}></BlogForm>
         <ul>
-          {blogs.map((value, index) => {
-            return <li key={index}>{value.author} {value.title} {value.url} {value.votes}</li>
+          {blog.map(blog => {
+            return <li key={blog.title}>{blog.author} {blog.title} {blog.url} {blog.likes || 0}</li>
           })}
         </ul>
       </header>
