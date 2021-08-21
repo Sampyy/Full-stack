@@ -1,8 +1,8 @@
+
 import React, { useState, useEffect } from 'react'
 import Note from './components/Note'
-import noteService from './services/notes'
 import Notification from './components/Notification'
-import Footer from './components/Footer'
+import noteService from './services/notes'
 
 const App = () => {
   const [notes, setNotes] = useState([]) 
@@ -15,8 +15,7 @@ const App = () => {
       .getAll()
       .then(initialNotes => {
         setNotes(initialNotes)
-      }
-      )
+      })
   }, [])
 
   const addNote = (event) => {
@@ -30,37 +29,35 @@ const App = () => {
   
     noteService
       .create(noteObject)
-      .then(initialNotes => {
-        setNotes(notes.concat(initialNotes))
+      .then(returnedNote => {
+        setNotes(notes.concat(returnedNote))
         setNewNote('')
       })
-    }
-  
-
-  const handleNoteChange = (event) => {
-    setNewNote(event.target.value)
   }
 
   const toggleImportanceOf = (id) => {
-    const url = `http://localhost:3001/notes/${id}`
+    const url = `https://fullstacknode.herokuapp.com/api/notes${id}`
     const note = notes.find(n => n.id === id)
-    const changedNote = { ...note, important: !note.important}
-
+    const changedNote = { ...note, important: !note.important }
+  
     noteService
       .update(id, changedNote)
-      .then(returnNote => {
-        setNotes(notes.map(note => note.id !== id ? note : returnNote))
-      }).catch(error => {
+      .then(returnedNote => {
+        setNotes(notes.map(note => note.id !== id ? note : returnedNote))
+      })
+      .catch(error => {
         setErrorMessage(
           `Note '${note.content}' was already removed from server`
         )
         setTimeout(() => {
           setErrorMessage(null)
-        }, 5000)
-        setNotes(notes.filter(n => n.id !== id))
+        }, 5000)   
       })
   }
 
+  const handleNoteChange = (event) => {
+    setNewNote(event.target.value)
+  }
 
   const notesToShow = showAll
     ? notes
@@ -77,10 +74,10 @@ const App = () => {
       </div>      
       <ul>
         {notesToShow.map((note, i) => 
-          <Note 
-          key={i} 
-          note={note} 
-          toggleImportance={()=> toggleImportanceOf(note.id)} 
+          <Note
+            key={i}
+            note={note} 
+            toggleImportance={() => toggleImportanceOf(note.id)}
           />
         )}
       </ul>
@@ -91,7 +88,6 @@ const App = () => {
         />
         <button type="submit">save</button>
       </form>   
-      <Footer />
     </div>
   )
 }

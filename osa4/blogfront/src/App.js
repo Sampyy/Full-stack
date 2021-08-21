@@ -32,6 +32,8 @@ const App = () => {
       url: newUrl,
       likes: 0,
     }
+
+    blogs.create(newBlog)
     //creating in backend
 
     setBlogs(blog.concat(newBlog))

@@ -53,15 +53,27 @@ const App = () => {
     })
     if(found === false) {
           console.log('pistetään')
-           setPersons(persons.concat(personObject))
+           
           numbers.create(personObject)
-          setSuccessStatus(true)
-          setErrorMessage(`Person '${personObject.name}' added`)
-          setTimeout(() => {
-            setErrorMessage(null)
-          }, 5000)
-          setNewName('')
-          setNewNumber('')
+          .then(createdPerson => {
+            setSuccessStatus(true)
+            setErrorMessage(`Person '${createdPerson.name}' added`)
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 5000)
+            setNewName('')
+            setNewNumber('')
+            setPersons(persons.concat(personObject))
+          })
+          .catch(error => {
+            console.log(error.response.data.error)
+            setSuccessStatus(false)
+            setErrorMessage(error.response.data.error)
+            setTimeout(() => {
+              setErrorMessage(null)
+            }, 5000)
+          })
+          
         }
   }
 

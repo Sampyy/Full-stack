@@ -52,7 +52,6 @@ let notes = [
     }
   })
 
-
   const generateId = () => {
     const maxId = notes.length > 0 
     ? Math.max(...notes.map(n => n.id)) : 0
@@ -88,7 +87,6 @@ let notes = [
     
     response.json(note)
   })
-
 
 const PORT = process.env.PORT || 3001
 app.listen(PORT, () => {
