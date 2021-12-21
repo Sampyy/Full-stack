@@ -35,9 +35,30 @@ const App = () => {
 
     blogs.create(newBlog)
     //creating in backend
-
-    setBlogs(blog.concat(newBlog))
+    if (newTitle !== undefined && newUrl !== undefined) {
+      setBlogs(blog.concat(newBlog))
+    }
   }
+
+  const handleDelete = (id) => {
+    blogs.deleteId(id)
+    blogs.getAll().then(res => {
+      setBlogs(blog.filter(blog => blog.id !== id))
+    })
+  }
+
+  const addLikes = id => {
+    const blogForId = blog.find(b => b.id === id)
+    const newBlog = {...blogForId, likes: blogForId.likes++}
+
+    console.log(newBlog)
+
+    blogs.update(id, newBlog).then(response => {
+      setBlogs(blog.map(b => b.id !== id ? b : response))
+    })
+    .catch(exception => console.log(exception))
+  }
+  
 
   const hook = () => {
     blogs.getAll().then(response => setBlogs(response))
@@ -58,7 +79,9 @@ const App = () => {
         <BlogForm newAuthor = {newAuthor} handleAuthor={handleAuthor} newTitle = {newTitle} handleTitle={handleTitle} url = {newUrl} handleUrl={handleUrl} addBlog={addBlog}></BlogForm>
         <ul>
           {blog.map(blog => {
-            return <li key={blog.title}>{blog.author} {blog.title} {blog.url} {blog.likes || 0}</li>
+            return <li key={blog.title}>{blog.author} {blog.title} {blog.url} {blog.likes || 0}
+              <button onClick={() => addLikes(blog.id)}>Like</button>
+              <button onClick={() => handleDelete(blog.id)}>Delete</button></li>
           })}
         </ul>
       </header>
