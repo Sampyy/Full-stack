@@ -1,1 +1,12 @@
 ./osa3/notebackend/node_modules/*
+
+./osa5/bloglist-frontend/.eslintcache
+./osa5/bloglist-frontend//cypress/screenshots
+./osa5/bloglist-frontend//cypress/videos
+
+./osa5/bloglist-frontend/.DS_Store
+./osa5/bloglist-frontend/.env.local
+./osa5/bloglist-frontend/.env.development.local
+./osa5/bloglist-frontend/.env.test.local
+./osa5/bloglist-frontend/.env.production.local
+./osa5/bloglist-frontend//coverage
