@@ -2,16 +2,13 @@ import { useState, useEffect } from 'react';
 import './App.css';
 import blogs from './services/blogs'
 import BlogForm from './components/BlogForm'
+import LoginForm from './components/LoginForm'
 
 
 
 const App = () => {
   
   const [blog, setBlogs] = useState([ 
-  /*{author:'auto',
-  title:'on se',
-  url:'jep',
-  votes:5},
   {author:'auto',
   title:'on se',
   url:'jep',
@@ -19,10 +16,16 @@ const App = () => {
   {author:'auto',
   title:'on se',
   url:'jep',
-  votes:5}*/])
+  votes:5},
+  {author:'auto',
+  title:'on se',
+  url:'jep',
+  votes:5}])
   const [newAuthor, setNewAuthor] = useState('auth')
   const [newTitle, setNewTitle] = useState('tit')
   const [newUrl, setNewUrl] = useState('ura')
+  const [username, setUsername] = useState('')
+  const [password, setPassword] = useState('')
 
   const addBlog = (event) => {
     event.preventDefault()
@@ -47,6 +50,11 @@ const App = () => {
     })
   }
 
+  const handleLogin = (event) => {
+    event.preventDefault()
+    console.log('logging in with', username, password)
+  }
+
   const addLikes = id => {
     const blogForId = blog.find(b => b.id === id)
     const newBlog = {...blogForId, likes: blogForId.likes++}
@@ -64,7 +72,7 @@ const App = () => {
     blogs.getAll().then(response => setBlogs(response))
   }
 
-  useEffect(hook, [])
+  //useEffect(hook, [])
 
   const handleAuthor = event => setNewAuthor(event.target.value)
   const handleTitle = event => setNewTitle(event.target.value)
@@ -74,6 +82,7 @@ const App = () => {
   return (
     <div className="App">
       <header className="Blogit">
+        <LoginForm username={username} setUsername={setUsername} password={password} setPassword={setPassword} handleLogin={handleLogin}/>
         <h3>add a new blog</h3>
         {console.log('url' + newUrl + ' author ' + newAuthor + ' title '+ newTitle)}
         <BlogForm newAuthor = {newAuthor} handleAuthor={handleAuthor} newTitle = {newTitle} handleTitle={handleTitle} url = {newUrl} handleUrl={handleUrl} addBlog={addBlog}></BlogForm>
