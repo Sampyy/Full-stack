@@ -12,8 +12,8 @@ const AnecdoteList = () => {
         console.log('vote', id)
         dispatch(voteAnecdote(id))
         const anecdote = anecdotes.find(a => a.id === id)
-        dispatch(setNotification('You voted "' + anecdote.content + '"'))
-        setTimeout(() => dispatch(removeNotification()), 5000)
+        dispatch(setNotification('You voted "' + anecdote.content + '"', 5))
+        
       }
 
     return(
@@ -32,3 +32,5 @@ const AnecdoteList = () => {
       </div>
     )
 }
+
+export default AnecdoteList
