@@ -12,47 +12,47 @@ describe('when there is initially one user at db', () => {
         await User.deleteMany({})
 
         const passwordHash = await bcrypt.hash('salasana', 10)
-        const user = new User({ username: 'root', passwordHash})
+        const user = new User({ username: 'root', passwordHash })
 
         await user.save()
     })
 
-    test ('creation succeeds for new username', async () => {
+    test('creation succeeds for new username', async () => {
         const usersAtStart = await helper.usersInDb()
 
         const newUser = {
-            username: 'new user', 
-            name: 'user that is new', 
-            password: 'isASecret'
+            username: 'new user',
+            name: 'user that is new',
+            password: 'isASecret',
         }
 
         await api
-        .post('/api/users')
-        .send(newUser)
-        .expect(200)
-        .expect('Content-Type', /application\/json/)
+            .post('/api/users')
+            .send(newUser)
+            .expect(200)
+            .expect('Content-Type', /application\/json/)
 
         const usersAtEnd = await helper.usersInDb()
         expect(usersAtEnd).toHaveLength(usersAtStart.length + 1)
 
-        const usernames = usersAtEnd.map(u => u.username)
+        const usernames = usersAtEnd.map((u) => u.username)
         expect(usernames).toContain('new user')
     })
 
-    test ('creation fails for existing username', async () => {
+    test('creation fails for existing username', async () => {
         const usersAtStart = await helper.usersInDb()
 
         const newUser = {
             username: 'root',
             name: 'user that is not new',
-            password: 'secretpw'
+            password: 'secretpw',
         }
 
         const result = await api
-        .post('/api/users')
-        .send(newUser)
-        .expect(400)
-        .expect('Content-Type', /application\/json/)
+            .post('/api/users')
+            .send(newUser)
+            .expect(400)
+            .expect('Content-Type', /application\/json/)
 
         console.log('console log: ++ ' + result.body.error)
 
@@ -60,61 +60,60 @@ describe('when there is initially one user at db', () => {
 
         const usersAtEnd = await helper.usersInDb()
         expect(usersAtEnd).toHaveLength(usersAtStart.length)
-
-        
     })
 
-    test ('creation fails for too short username', async () => {
+    test('creation fails for too short username', async () => {
         const usersAtStart = await helper.usersInDb()
 
         const newUser = {
             username: 'ro',
             name: 'user that is not new',
-            password: 'secretpw'
+            password: 'secretpw',
         }
 
         const result = await api
-        .post('/api/users')
-        .send(newUser)
-        .expect(400)
-        .expect('Content-Type', /application\/json/)
+            .post('/api/users')
+            .send(newUser)
+            .expect(400)
+            .expect('Content-Type', /application\/json/)
 
         console.log('console log: ++ ' + result.body.error)
 
-        expect(result.body.error).toContain('`username` (`' + newUser.username + '`) is shorter than the minimum allowed length')
+        expect(result.body.error).toContain(
+            '`username` (`' +
+                newUser.username +
+                '`) is shorter than the minimum allowed length'
+        )
 
         const usersAtEnd = await helper.usersInDb()
         expect(usersAtEnd).toHaveLength(usersAtStart.length)
-
-        
     })
 
-    test ('creation fails for too short password', async () => {
+    test('creation fails for too short password', async () => {
         const usersAtStart = await helper.usersInDb()
 
         const newUser = {
             username: 'rorerasa',
             name: 'user that is not new',
-            password: 'se'
+            password: 'se',
         }
 
         const result = await api
-        .post('/api/users')
-        .send(newUser)
-        .expect(400)
-        .expect('Content-Type', /application\/json/)
+            .post('/api/users')
+            .send(newUser)
+            .expect(400)
+            .expect('Content-Type', /application\/json/)
 
         console.log('console log: ++ ' + result.body.error)
 
-        expect(result.body.error).toContain('Password is shorter than 3 characters')
+        expect(result.body.error).toContain(
+            'Password is shorter than 3 characters'
+        )
 
         const usersAtEnd = await helper.usersInDb()
         expect(usersAtEnd).toHaveLength(usersAtStart.length)
-
-        
     })
 })
-
 
 afterAll(() => {
     mongoose.connection.close()

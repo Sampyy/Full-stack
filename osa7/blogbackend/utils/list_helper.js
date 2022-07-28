@@ -1,4 +1,4 @@
-const blog = require("../models/blog")
+const blog = require('../models/blog')
 
 const dummy = (blogs) => {
     return 1
@@ -8,7 +8,7 @@ const totalLikes = (blogs) => {
     const reducer = (likes, blog) => {
         return likes + blog.likes
     }
-
+    const save = 'awgr'
     return blogs.reduce(reducer, 0)
 }
 
@@ -20,11 +20,11 @@ const favoriteBlog = (blogs) => {
         }
     })
 
-    return currentFavorite || "No blogs"
+    return currentFavorite || 'No blogs'
 }
 
 const mostBlogs = (blogs) => {
-    var currentTopAuthor = ""
+    var currentTopAuthor = ''
     var currentTopBlogs = 0
     var blogsAmounts = {}
 
@@ -36,29 +36,30 @@ const mostBlogs = (blogs) => {
         }
     })
 
-    return {"author":currentTopAuthor, "blogs":Number(currentTopBlogs)}
+    return { author: currentTopAuthor, blogs: Number(currentTopBlogs) }
 }
 
 const mostLikes = (blogs) => {
     var likesAmounts = {}
-    var currentTopAuthor=""
+    var currentTopAuthor = ''
     var currentTopLikes = 0
 
     blogs.map((blog) => {
-        likesAmounts[blog.author] = likesAmounts[blog.author] + blog.likes || blog.likes
+        likesAmounts[blog.author] =
+            likesAmounts[blog.author] + blog.likes || blog.likes
         if (likesAmounts[blog.author] > currentTopLikes) {
             currentTopAuthor = blog.author
             currentTopLikes = likesAmounts[blog.author]
         }
     })
 
-    return {"author": currentTopAuthor, "likes": currentTopLikes}
+    return { author: currentTopAuthor, likes: currentTopLikes }
 }
 
-module.exports = {  
+module.exports = {
     dummy,
     totalLikes,
     favoriteBlog,
     mostBlogs,
-    mostLikes
+    mostLikes,
 }

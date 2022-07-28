@@ -8,30 +8,34 @@ const Blog = require('../models/blog')
 
 const initialBlogs = [
     {
-        'author':'added',
-        'title':'test blog',
-        'url':'www.test.com',
-        'likes':5,
-        'user':'622f408504bc9054505c63c8'
+        author: 'added',
+        title: 'test blog',
+        url: 'www.test.com',
+        likes: 5,
+        user: '622f408504bc9054505c63c8',
     },
     {
-        'author':'added another',
-        'title':'test blog to test',
-        'url':'www.test.com/2',
-        'likes':5,
-        'user':'622f408504bc9054505c63c8'
-    }
+        author: 'added another',
+        title: 'test blog to test',
+        url: 'www.test.com/2',
+        likes: 5,
+        user: '622f408504bc9054505c63c8',
+    },
 ]
 
 var token = null
 
 beforeAll(async () => {
     const res = await api.post('/api/login').send({
-        "username": "root",
-        "password": "salasana"
+        username: 'root',
+        password: 'salasana',
     })
     token = res.body.token
-    console.log('-------------------------- hererereeree \n\n\n token: ' + token + '\n\n\n')
+    console.log(
+        '-------------------------- hererereeree \n\n\n token: ' +
+            token +
+            '\n\n\n'
+    )
 })
 
 beforeEach(async () => {
@@ -39,11 +43,11 @@ beforeEach(async () => {
     await Blog.insertMany(initialBlogs)
 })
 
-test('blogs are returned as json', async () =>  {
+test('blogs are returned as json', async () => {
     await api
-    .get('/api/blogs')
-    .expect(200)
-    .expect('Content-type', /application\/json/)
+        .get('/api/blogs')
+        .expect(200)
+        .expect('Content-type', /application\/json/)
 })
 
 test('app returns correct amount of blogs', async () => {
@@ -54,66 +58,62 @@ test('app returns correct amount of blogs', async () => {
 
 test('app saves id in field "id"', async () => {
     const res = await api.get('/api/blogs')
-    
-    expect(res.body[0].id).toBeDefined()
 
+    expect(res.body[0].id).toBeDefined()
 })
 
 test('app can add a blog to db using post with a legal token', async () => {
-    const blogToAdd ={
-        'author':'new blog to add',
-        'title': 'a great blog',
-        'url':'newblog.com'
+    const blogToAdd = {
+        author: 'new blog to add',
+        title: 'a great blog',
+        url: 'newblog.com',
     }
 
     await api
-    .post('/api/blogs')
-    .set({ Authorization: 'bearer ' + token})
-    .send(blogToAdd)
-    
-    .expect(200)
-    .expect('Content-Type', /application\/json/)
+        .post('/api/blogs')
+        .set({ Authorization: 'bearer ' + token })
+        .send(blogToAdd)
+
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
 
     const blogsAfterAdd = await api.get('/api/blogs')
-    const contents = blogsAfterAdd.body.map(b => b.author)
+    const contents = blogsAfterAdd.body.map((b) => b.author)
     expect(blogsAfterAdd.body).toHaveLength(initialBlogs.length + 1)
 
-    
     expect(contents).toContain('new blog to add')
 })
 
 test('likes default to 0 if not given in post request', async () => {
     const blogToAdd = {
-        'author':'new blog to add',
-        'title': 'a great blog',
-        'url':'newblog.com'
+        author: 'new blog to add',
+        title: 'a great blog',
+        url: 'newblog.com',
     }
 
     await api
-    .post('/api/blogs')
-    .set({ Authorization: 'bearer ' + token})
-    .send(blogToAdd)
-    .expect(200)
-    .expect('Content-Type', /application\/json/)
+        .post('/api/blogs')
+        .set({ Authorization: 'bearer ' + token })
+        .send(blogToAdd)
+        .expect(200)
+        .expect('Content-Type', /application\/json/)
 
     const blogsAfterAdd = await api.get('/api/blogs')
     const contents = blogsAfterAdd.body
-
-
 
     expect(contents[initialBlogs.length].likes).toBe(0)
 })
 
 test('post request without title or url responds with 400 bad request', async () => {
     const blogToAdd = {
-        'author':'authorthatisbad'
+        author: 'authorthatisbad',
     }
 
     await api
-    .post('/api/blogs')
-    .set({ Authorization: 'bearer ' + token})
-    .send(blogToAdd)
-    .expect(400)
+        .post('/api/blogs')
+        .set({ Authorization: 'bearer ' + token })
+        .send(blogToAdd)
+        .expect(400)
 })
 
 test('a blog can be deleted', async () => {
@@ -122,17 +122,14 @@ test('a blog can be deleted', async () => {
     const blogToDelete = blogsBeforeDelete[0]
 
     await api
-    .delete(`/api/blogs/${blogToDelete.id}`)
-    .set({ Authorization: 'bearer ' + token})
-    .expect(204)
+        .delete(`/api/blogs/${blogToDelete.id}`)
+        .set({ Authorization: 'bearer ' + token })
+        .expect(204)
 
     const blogsAfterDelete = await api.get('/api/blogs').expect(200)
 
     expect(blogsAfterDelete.body).toHaveLength(initialBlogs.length - 1)
 })
-
-
-
 
 afterAll(() => {
     mongoose.connection.close()
