@@ -1,6 +1,11 @@
 import React, { useState } from 'react'
-const Blog = ({ blog, handleAddLike, handleDelete, user }) => {
+import { useDispatch } from 'react-redux'
+import { voteBlog, deleteBlog } from '../reducers/blogReducer'
+import { setNotification } from '../reducers/notificationReducer'
+const Blog = ({ blog, user }) => {
     const [visible, setVisible] = useState(false)
+
+    const dispatch = useDispatch()
 
     const showPartial = {
         display: visible ? 'none' : '',
@@ -19,6 +24,42 @@ const Blog = ({ blog, handleAddLike, handleDelete, user }) => {
         marginBottom: 5,
     }
 
+    const handleVoteBlog = async () => {
+        event.preventDefault()
+        try {
+            await dispatch(voteBlog(blog, blog.user))
+            dispatch(
+                setNotification('Voted ' + blog.title + ' by ' + blog.author)
+            )
+        } catch (exception) {
+            dispatch(
+                setNotification('Like couldn`t be added: ' + exception, true)
+            )
+        }
+    }
+
+    const handleDeleteBlog = async () => {
+        event.preventDefault()
+        try {
+            if (window.confirm('Do you really want to delete the blog?')) {
+                await dispatch(deleteBlog(blog))
+                dispatch(
+                    setNotification(
+                        'Blog ' +
+                            blog.title +
+                            ' by ' +
+                            blog.author +
+                            ' has been deleted'
+                    )
+                )
+            }
+        } catch (exception) {
+            dispatch(
+                setNotification('blog couldn`t be deleted: ' + exception, true)
+            )
+        }
+    }
+
     return (
         <div className="blog">
             <div style={showPartial} className="partialContent">
@@ -34,14 +75,14 @@ const Blog = ({ blog, handleAddLike, handleDelete, user }) => {
                 <div>{blog.url} </div>
                 <div>
                     likes {blog.likes}
-                    <button onClick={() => handleAddLike(blog)}>Like</button>
+                    <button onClick={() => dispatch(handleVoteBlog)}>
+                        Like
+                    </button>
                 </div>
                 <div>{blog.user.name}</div>
-                {user.username === blog.user.username && (
+                {user.user.username === blog.user.username && (
                     <div>
-                        <button onClick={() => handleDelete(blog)}>
-                            Remove
-                        </button>
+                        <button onClick={() => handleDeleteBlog()}>Remove</button>
                     </div>
                 )}
             </div>

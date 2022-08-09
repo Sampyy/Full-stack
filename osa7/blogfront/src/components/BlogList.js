@@ -1,7 +1,8 @@
-import { useSelector } from 'react-redux'
+import { useSelector, useDispatch } from 'react-redux'
 import Blog from './Blog'
+import { voteBlog } from '../reducers/blogReducer'
 
-const BlogList = () => {
+const BlogList = (user) => {
     const blogs = useSelector((state) => state.blogs)
     console.log(blogs)
 
@@ -11,9 +12,7 @@ const BlogList = () => {
                 <Blog
                     key={blog.id}
                     blog={blog}
-                    handleAddLike={null}
-                    handleDelete={null}
-                    user={{ name: 'some', username: 'soawea', blogs: [] }} //fix later
+                    user={user} //fix later
                 />
             ))}
         </div>

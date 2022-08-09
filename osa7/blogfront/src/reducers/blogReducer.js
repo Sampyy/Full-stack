@@ -11,7 +11,18 @@ const blogSlice = createSlice({
             state.push(blog)
         },
         setBlogs(state, action) {
-            return action.payload
+            return action.payload.sort((blog1, blog2) => blog2.likes - blog1.likes)
+        },
+        voteInternalBlog(state, action) {
+            const blogToVote = action.payload
+            return state
+                .map((blog) => (blog.id !== blogToVote.id ? blog : blogToVote))
+                .sort((blog1, blog2) => blog2.likes - blog1.likes)
+        },
+        deleteInternalBlog(state, action) {
+            const deletedBlog = action.payload
+            console.log(deletedBlog)
+            return state.filter((blog) => blog.id !== deletedBlog.id)
         },
     },
 })
@@ -30,5 +41,20 @@ export const initializeBlogs = () => {
     }
 }
 
-export const { addBlog, setBlogs } = blogSlice.actions
+export const voteBlog = (blog, user) => {
+    return async (dispatch) => {
+        const votedBlog = await blogService.addLike(blog)
+        dispatch(voteInternalBlog({ ...votedBlog, user: user }))
+    }
+}
+
+export const deleteBlog = (blog) => {
+    return async (dispatch) => {
+        const deletedBlog = await blogService.deleteBlog(blog)
+        dispatch(deleteInternalBlog(blog))
+    }
+}
+
+export const { addBlog, setBlogs, voteInternalBlog, deleteInternalBlog } =
+    blogSlice.actions
 export default blogSlice.reducer

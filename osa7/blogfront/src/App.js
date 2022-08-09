@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from 'react'
 import Notification from './components/Notification'
-import Blog from './components/Blog'
 import LoginForm from './components/LoginForm'
 import Toggleable from './components/Toggleable'
 import BlogForm from './components/BlogForm'
@@ -9,7 +8,7 @@ import blogService from './services/blogs'
 import loginService from './services/login'
 import BlogList from './components/BlogList'
 import { useDispatch } from 'react-redux'
-import { addBlog, initializeBlogs } from './reducers/blogReducer'
+import { initializeBlogs } from './reducers/blogReducer'
 import { setNotification } from './reducers/notificationReducer'
 
 const App = () => {
@@ -146,16 +145,7 @@ const App = () => {
                         <BlogForm user={user} blogFormRef={blogFormRef} />
                     </Toggleable>
                     <h2>blogs</h2>
-                    {/*blogs.map((blog) => (
-                        <Blog
-                            key={blog.id}
-                            blog={blog}
-                            handleAddLike={handleAddLike}
-                            handleDelete={handleDelete}
-                            user={user}
-                        />
-                    ))*/}
-                    <BlogList />
+                    <BlogList user={user} />
                 </div>
             )}
         </div>
