@@ -26,14 +26,14 @@ export const setNotification = (notification, type) => {
         return (dispatch) => {
             dispatch(setErrorNotification(notification))
             lastTimeout = setTimeout(
-                () => dispatch(removeNotification),
+                () => dispatch(removeNotification('')),
                 5000
             )
         }
     default:
         return (dispatch) => {
             dispatch(setSuccessNotification(notification))
-            lastTimeout = setTimeout(() => dispatch(removeNotification), 5000)
+            lastTimeout = setTimeout(() => dispatch(removeNotification('')), 5000)
         }
     }
 }
