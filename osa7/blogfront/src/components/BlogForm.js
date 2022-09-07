@@ -1,10 +1,11 @@
 import React from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
 import { createBlog } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
 
-const BlogForm = ({ user, blogFormRef }) => {
+const BlogForm = ({ blogFormRef }) => {
     const dispatch = useDispatch()
+    const user = useSelector((state) => state.user)
 
     const createABlog = async (event) => {
         event.preventDefault()
