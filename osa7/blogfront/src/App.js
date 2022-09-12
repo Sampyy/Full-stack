@@ -4,16 +4,23 @@ import LoginForm from './components/LoginForm'
 import Toggleable from './components/Toggleable'
 import BlogForm from './components/BlogForm'
 import LoggedIn from './components/LoggedIn'
+import Users from './components/Users'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import BlogList from './components/BlogList'
+import Blogs from './components/Blogs'
 import { useDispatch, useSelector } from 'react-redux'
 import { initializeBlogs } from './reducers/blogReducer'
+import { initializeUsers } from './reducers/usersReducer'
 import { setNotification } from './reducers/notificationReducer'
 import { loginUser, clearUser, setUser } from './reducers/userReducer'
+import User from './components/User'
+import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import Home from './components/Home'
 
 const App = () => {
     const user = useSelector((state) => state.user)
+    const users = useSelector((state) => state.users)
 
     const blogFormRef = useRef()
 
@@ -57,28 +64,43 @@ const App = () => {
         dispatch(initializeBlogs())
     }, [dispatch])
 
-    return (
-        <div>
-            <h1>Blogs</h1>
+    useEffect(() => {
+        dispatch(initializeUsers())
+    }, [dispatch])
 
-            <Notification />
-            {user === null ? (
-                <LoginForm
-                />
-            ) : (
-                <div>
-                    <LoggedIn handleLogout={handleLogout} />
-                    <Toggleable
-                        buttonLabel={'Add a new blog'}
-                        ref={blogFormRef}
-                    >
-                        <BlogForm user={user} blogFormRef={blogFormRef} />
-                    </Toggleable>
-                    <h2>blogs</h2>
-                    <BlogList user={user} />
-                </div>
-            )}
-        </div>
+    return (
+        <Router>
+            <div>
+                <Link to="/">home</Link>
+                <Link to="/users">users</Link>
+                <Link to="/blogs">blogs</Link>
+            </div>
+
+            <div>
+                <h1>Blogs</h1>
+
+                <Notification />
+                {user === null ? (
+                    <LoginForm />
+                ) : (
+                    <div>
+                        <LoggedIn handleLogout={handleLogout} />
+                    </div>
+                )}
+                <Routes>
+                    <Route
+                        path="/"
+                        element={<Home blogFormRef={blogFormRef} />}
+                    />
+                    <Route path="/users/:id" element={<User users={users} />} />
+                    <Route path="/users" element={<Users />} />
+                    <Route
+                        path="/blogs"
+                        element={<Blogs blogFormRef={blogFormRef} />}
+                    />
+                </Routes>
+            </div>
+        </Router>
     )
 }
 
