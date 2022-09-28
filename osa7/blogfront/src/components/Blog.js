@@ -1,11 +1,21 @@
 import React, { useState } from 'react'
-import { useDispatch } from 'react-redux'
+import { useDispatch, useSelector } from 'react-redux'
+import { useParams } from 'react-router-dom'
 import { voteBlog, deleteBlog } from '../reducers/blogReducer'
 import { setNotification } from '../reducers/notificationReducer'
-const Blog = ({ blog, user }) => {
+import { createComment } from '../reducers/commentReducer'
+import { Link } from 'react-router-dom'
+import commentService from '../services/comments'
+
+const Blog = ({ blog, full }) => {
     const [visible, setVisible] = useState(false)
 
     const dispatch = useDispatch()
+    const user = useSelector((state) => state.user)
+    const comments = useSelector((state) => state.comments)
+    const filteredComments = comments.filter(
+        (comment) => blog && comment.blog === blog.id
+    )
 
     const showPartial = {
         display: visible ? 'none' : '',
@@ -59,8 +69,89 @@ const Blog = ({ blog, user }) => {
             )
         }
     }
+    const createAComment = async (event) => {
+        event.preventDefault()
+        console.log(blog)
+        try {
+            await dispatch(
+                createComment(blog, event.target.comment.value )
+            )
+            dispatch(
+                setNotification(
+                    'Added a new comment: ' + event.target.comment.value,
+                    false
+                )
+            )
+        } catch (exception) {
+            console.log(exception)
+            dispatch(
+                setNotification('Comment couldn´t be added: ' + exception, true)
+            )
+        }
+    }
+    if (!blog) {
+        return null
+    }
+
+    if (full) {
+        console.log(blog)
+        return (
+            <div className="blog">
+                <div className="fullContent">
+                    <h2>{blog.title} </h2>
+                    <a href={blog.url} target={'_blank'} rel="noreferrer">
+                        {blog.url}{' '}
+                    </a>
+                    <div>
+                        likes {blog.likes}
+                        <button onClick={() => dispatch(handleVoteBlog)}>
+                            Like
+                        </button>
+                    </div>
+                    <div>{blog.user.name}</div>
+                    {user.username === blog.user.username && (
+                        <div>
+                            <button onClick={() => handleDeleteBlog()}>
+                                Remove
+                            </button>
+                        </div>
+                    )}
+                    <h3>comments</h3>
+                    <form onSubmit={createAComment}>
+                        <div>
+                            <input
+                                name={'comment'}
+                                id={'commentField'}
+                                placeholder={'Comment'}
+                            />
+                        </div>
+                        <div>
+                            <button type="submit" id="addCommentButton">
+                                Add comment
+                            </button>
+                        </div>
+                    </form>
+                    <ul>
+                        {filteredComments.map((comment) => (
+                            <li key={comment.id}>{comment.content}</li>
+                        ))}
+                    </ul>
+                </div>
+            </div>
+        )
+    }
 
     return (
+        <div className="blog">
+            <div style={showPartial} className="partialContent">
+                <Link to={`/blogs/${blog.id}`}>
+                    {blog.title} {blog.author}
+                </Link>
+            </div>
+        </div>
+    )
+
+    /*return (
         <div className="blog">
             <div style={showPartial} className="partialContent">
                 {blog.title} {blog.author}
@@ -87,6 +178,6 @@ const Blog = ({ blog, user }) => {
                 )}
             </div>
         </div>
-    )
+    )*/
 }
 export default Blog

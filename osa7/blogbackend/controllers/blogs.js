@@ -1,6 +1,7 @@
 const blogsRouter = require('express').Router()
 const { findById } = require('../models/blog.js')
 const Blog = require('../models/blog.js')
+const Comment = require('../models/comment')
 const User = require('../models/user')
 const jwt = require('jsonwebtoken')
 const { userExtractor } = require('../utils/middleware.js')
@@ -22,6 +23,25 @@ blogsRouter.get('/:id', async (request, response) => {
         } else {
             console.log('invalid id request')
             response.status(404).end()
+        }
+    } catch (exception) {
+        return response.status(400).send(exception)
+    }
+})
+
+blogsRouter.post('/:id/comments', async (request, response) => {
+    const body = request.body
+    try {
+        const blog = await Blog.findById(request.params.id)
+        console.log(blog)
+        if (blog) {
+            const comment = new Comment({
+                content: body.content,
+                blog: blog,
+            })
+            console.log(comment)
+            const savedComment = await comment.save()
+            response.json(savedComment.toJSON())
         }
     } catch (exception) {
         return response.status(400).send(exception)

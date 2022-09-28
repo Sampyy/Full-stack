@@ -8,17 +8,19 @@ const Users = () => {
     const users = useSelector((state) => state.users)
     return (
         <div>
-            <h2>Users</h2>
-            <table>
-                <td>name</td>
-                <td>blogs created</td>
+            <tbody>
+                <h2>Users</h2>
+                <tr>
+                    <td>name</td>
+                    <td>blogs created</td>
+                </tr>
                 {users.map((user) => (
                     <tr key={user.id}>
                         <Link to={`/users/${user.id}`}>{user.name}</Link>
                         <td>{user.blogs.length}</td>
                     </tr>
                 ))}
-            </table>
+            </tbody>
         </div>
     )
 }

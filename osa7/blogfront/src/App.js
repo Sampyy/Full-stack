@@ -8,6 +8,8 @@ import Users from './components/Users'
 import blogService from './services/blogs'
 import loginService from './services/login'
 import BlogList from './components/BlogList'
+import Navbar from './components/Navbar'
+import Blog from './components/Blog'
 import Blogs from './components/Blogs'
 import { useDispatch, useSelector } from 'react-redux'
 import { initializeBlogs } from './reducers/blogReducer'
@@ -15,12 +17,26 @@ import { initializeUsers } from './reducers/usersReducer'
 import { setNotification } from './reducers/notificationReducer'
 import { loginUser, clearUser, setUser } from './reducers/userReducer'
 import User from './components/User'
-import { BrowserRouter as Router, Routes, Route, Link } from 'react-router-dom'
+import {
+    BrowserRouter as Router,
+    Routes,
+    Route,
+    Link,
+    useMatch,
+} from 'react-router-dom'
 import Home from './components/Home'
+import { initializeComments } from './reducers/commentReducer'
 
 const App = () => {
     const user = useSelector((state) => state.user)
     const users = useSelector((state) => state.users)
+    const blogs = useSelector((state) => state.blogs)
+    const comments = useSelector((state) => state.comments)
+    const match = useMatch('/blogs/:id')
+
+    const blog = match
+        ? blogs.find((blog) => blog.id === match.params.id)
+        : null
 
     const blogFormRef = useRef()
 
@@ -68,13 +84,13 @@ const App = () => {
         dispatch(initializeUsers())
     }, [dispatch])
 
+    useEffect(() => {
+        dispatch(initializeComments())
+    }, [dispatch])
+
     return (
-        <Router>
-            <div>
-                <Link to="/">home</Link>
-                <Link to="/users">users</Link>
-                <Link to="/blogs">blogs</Link>
-            </div>
+        <div>
+            <Navbar handleLogout={handleLogout} />
 
             <div>
                 <h1>Blogs</h1>
@@ -83,14 +99,16 @@ const App = () => {
                 {user === null ? (
                     <LoginForm />
                 ) : (
-                    <div>
-                        <LoggedIn handleLogout={handleLogout} />
-                    </div>
+                    null
                 )}
                 <Routes>
                     <Route
                         path="/"
                         element={<Home blogFormRef={blogFormRef} />}
+                    />
+                    <Route
+                        path="/blogs/:id"
+                        element={<Blog full={true} blog={blog} />}
                     />
                     <Route path="/users/:id" element={<User users={users} />} />
                     <Route path="/users" element={<Users />} />
@@ -100,7 +118,7 @@ const App = () => {
                     />
                 </Routes>
             </div>
-        </Router>
+        </div>
     )
 }
 

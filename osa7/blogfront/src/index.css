@@ -17,3 +17,18 @@
     padding: 10px;
     margin-bottom: 10px;
 }
+
+.navBar {
+    padding: 5px;
+    background-color: gray;
+    border-radius: 2px;
+    margin: auto;
+}
+
+.navBar-element {
+    margin:auto;
+}
+
+.inline {
+    display:inline
+}
