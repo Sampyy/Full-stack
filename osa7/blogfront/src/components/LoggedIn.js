@@ -5,7 +5,9 @@ const LoggedIn = ({ handleLogout }) => {
     return (
         <div className="inline">
             <p className="inline">{user.name} logged in </p>
-            <button onClick={() => handleLogout()}>Log out </button>
+            <button onClick={() => handleLogout()} className="btn btn-primary">
+                Log out{' '}
+            </button>
         </div>
     )
 }

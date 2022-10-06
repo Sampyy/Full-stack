@@ -11,9 +11,11 @@ const commentSlice = createSlice({
             return action.payload
         },
         addComment(state, action) {
-            const comment = action.payload
+            const comment = {
+                blog: action.payload.blog.id,
+                content: action.payload.content,
+            }
             state.push(comment)
-            return state
         },
     },
 })

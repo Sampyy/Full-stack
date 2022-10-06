@@ -69,7 +69,7 @@ const BlogForm = ({ blogFormRef }) => {
                     />
                 </div>
                 <div>
-                    <button type="submit" id="addBlogButton">
+                    <button type="submit" id="addBlogButton" className="btn btn-primary">
                         Add blog
                     </button>
                 </div>

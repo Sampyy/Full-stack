@@ -13,9 +13,6 @@ const Blog = ({ blog, full }) => {
     const dispatch = useDispatch()
     const user = useSelector((state) => state.user)
     const comments = useSelector((state) => state.comments)
-    const filteredComments = comments.filter(
-        (comment) => blog && comment.blog === blog.id
-    )
 
     const showPartial = {
         display: visible ? 'none' : '',
@@ -73,9 +70,7 @@ const Blog = ({ blog, full }) => {
         event.preventDefault()
         console.log(blog)
         try {
-            await dispatch(
-                createComment(blog, event.target.comment.value )
-            )
+            await dispatch(createComment(blog, event.target.comment.value))
             dispatch(
                 setNotification(
                     'Added a new comment: ' + event.target.comment.value,
@@ -103,15 +98,18 @@ const Blog = ({ blog, full }) => {
                         {blog.url}{' '}
                     </a>
                     <div>
-                        likes {blog.likes}
-                        <button onClick={() => dispatch(handleVoteBlog)}>
+                        <p>likes {blog.likes}</p>
+                        <button onClick={() => dispatch(handleVoteBlog)} className="btn btn-success">
                             Like
                         </button>
                     </div>
                     <div>{blog.user.name}</div>
                     {user.username === blog.user.username && (
                         <div>
-                            <button onClick={() => handleDeleteBlog()}>
+                            <button
+                                onClick={() => handleDeleteBlog()}
+                                className="btn btn-danger"
+                            >
                                 Remove
                             </button>
                         </div>
@@ -126,15 +124,21 @@ const Blog = ({ blog, full }) => {
                             />
                         </div>
                         <div>
-                            <button type="submit" id="addCommentButton">
+                            <button
+                                type="submit"
+                                id="addCommentButton"
+                                className="btn btn-primary"
+                            >
                                 Add comment
                             </button>
                         </div>
                     </form>
                     <ul>
-                        {filteredComments.map((comment) => (
-                            <li key={comment.id}>{comment.content}</li>
-                        ))}
+                        {comments.map((comment) =>
+                            comment.blog === blog.id ? (
+                                <li>{comment.content}</li>
+                            ) : null
+                        )}
                     </ul>
                 </div>
             </div>
@@ -142,13 +146,15 @@ const Blog = ({ blog, full }) => {
     }
 
     return (
-        <div className="blog">
-            <div style={showPartial} className="partialContent">
-                <Link to={`/blogs/${blog.id}`}>
-                    {blog.title} {blog.author}
-                </Link>
+        <tr>
+            <div className="blog">
+                <div style={showPartial} className="partialContent">
+                    <Link to={`/blogs/${blog.id}`}>
+                        {blog.title} {blog.author}
+                    </Link>
+                </div>
             </div>
-        </div>
+        </tr>
     )
 
     /*return (

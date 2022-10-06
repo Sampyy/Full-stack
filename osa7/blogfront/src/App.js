@@ -92,15 +92,11 @@ const App = () => {
         <div>
             <Navbar handleLogout={handleLogout} />
 
-            <div>
+            <div className="container">
                 <h1>Blogs</h1>
 
                 <Notification />
-                {user === null ? (
-                    <LoginForm />
-                ) : (
-                    null
-                )}
+                {user === null ? <LoginForm /> : null}
                 <Routes>
                     <Route
                         path="/"
