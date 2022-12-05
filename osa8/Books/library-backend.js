@@ -182,10 +182,18 @@ const resolvers = {
         console.log("nulled")
         return null
       }
+      console.log("args, " + args.setBornTo)
       const updatedAuthor = { ...author, born: args.setBornTo }
-      authors.map((author) =>
-        author.name === args.name ? updatedAuthor : author
-      )
+      console.log(updatedAuthor)
+      authors.map((author) => {
+        /*console.log(
+          author.name + ", " + args.name + ", " + (author.name == args.name)
+        )*/
+        authors = authors.map((author) =>
+          author.name == args.name ? updatedAuthor : author
+        )
+      })
+      console.log(authors)
       return updatedAuthor
     }
   }
