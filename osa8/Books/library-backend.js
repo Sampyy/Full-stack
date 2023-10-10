@@ -171,11 +171,11 @@ const resolvers = {
         authorCount: async () => Author.collection.countDocuments(),
         allBooks: async (root, args) => {
             if (!args.author && !args.genre) {
-                return Book.find({})
+                return await Book.find({}).populate('author')
             }
 
             if (!args.author) {
-                return Book.find({ genres: args.genre })
+                return await Book.find({ genres: args.genre })
             }
             const author = await Author.findOne({ name: args.author })
             if (!args.genre) {
@@ -252,23 +252,24 @@ const resolvers = {
                     },
                 })
             }
-            try {
-                const author = await Author.findOne({ name: args.name })
-                author.born = args.setBornTo
+            const author = await Author.findOne({ name: args.name })
+            /*try {
+                
             } catch (error) {
-                throw new GraphQLError('Editing birth year failed', {
+                throw new GraphQLError('Finding author failed', {
                     extensions: {
                         code: 'BAD_USER_INPUT',
                         invalidArgs: args.name,
                         error,
                     },
                 })
-            }
+            }*/
 
             try {
+                author.born = args.setBornTo
                 await author.save()
             } catch (error) {
-                throw new GraphQLError('Editing birth year failed', {
+                throw new GraphQLError('Saving birthyear failed', {
                     extensions: {
                         code: 'BAD_USER_INPUT',
                         invalidArgs: args.name,
