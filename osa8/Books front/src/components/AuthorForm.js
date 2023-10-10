@@ -13,7 +13,12 @@ const AuthorForm = (props) => {
   })
 
   console.log(options)
-  const [editAuthor] = useMutation(EDIT_AUTHOR)
+  const [editAuthor] = useMutation(EDIT_AUTHOR, {
+    onError: (error) => {
+      const messages = error.graphQLErrors.map((e) => e.message).join("\n")
+      props.setError(messages)
+    }
+  })
 
   const submit = async (event) => {
     event.preventDefault()
