@@ -19,7 +19,6 @@ const App = () => {
       setToken(oldToken)
     }
   }, [])
-
   const notify = (message) => {
     setErrorMessage(message)
     setTimeout(() => {
@@ -28,6 +27,7 @@ const App = () => {
   }
 
   const logout = () => {
+    setPage("authors")
     setToken(null)
     localStorage.clear()
     client.resetStore()
@@ -47,14 +47,13 @@ const App = () => {
             add book
           </button>
         </td>
-        <td>
-          <button
-            hidden={token === null}
-            onClick={() => setPage("recommendations")}
-          >
-            recommendations
-          </button>
-        </td>
+        {token ? (
+          <td>
+            <button onClick={() => setPage("recommendations")}>
+              recommendations
+            </button>
+          </td>
+        ) : null}
 
         {token ? (
           <td>
@@ -72,7 +71,14 @@ const App = () => {
       <Books show={page === "books"} setError={notify} />
 
       <NewBook show={page === "add"} setError={notify} />
-      <Recommendations show={page === "recommendations"} setError={notify} />
+      {token ? (
+        <Recommendations
+          show={page === "recommendations"}
+          page={page}
+          setError={notify}
+          token={token}
+        />
+      ) : null}
 
       <LoginForm
         show={page === "loginForm"}

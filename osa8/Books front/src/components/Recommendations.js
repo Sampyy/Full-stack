@@ -4,17 +4,24 @@ import { ALL_BOOKS, ME } from "../queries"
 
 const Recommendations = (props) => {
   const [favoriteGenre, setFavoriteGenre] = useState(null)
+  const loggedUser = useQuery(ME)
   const result = useQuery(ALL_BOOKS, {
     variables: { genre: favoriteGenre }
   })
+
+  useEffect(() => {
+    if (props.page !== "recommendations") {
+      return
+    }
+    setFavoriteGenre(loggedUser.data.me.favoriteGenre)
+  }, [props.page])
   if (!props.show) {
     return null
   }
 
-  if ( result.loading) {
+  if (result.loading || loggedUser.loading) {
     return <div>loading</div>
   }
-  
   return (
     <div>
       <h4>Recommendations</h4>
