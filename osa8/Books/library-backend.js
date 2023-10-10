@@ -175,11 +175,13 @@ const resolvers = {
             }
 
             if (!args.author) {
-                return await Book.find({ genres: args.genre })
+                return await Book.find({ genres: args.genre }).populate(
+                    'author'
+                )
             }
             const author = await Author.findOne({ name: args.author })
             if (!args.genre) {
-                return Book.find({ author: author })
+                return Book.find({ author: author }).populate('author')
             }
 
             const books = await Book.find({ author: author })
