@@ -2,11 +2,13 @@ const { v1: uuid } = require('uuid')
 const Author = require('./Models/Author')
 const Book = require('./Models/Book')
 const { GraphQLError } = require('graphql')
+const { PubSub } = require('graphql-subscriptions')
 const jwt = require('jsonwebtoken')
 const User = require('./Models/User')
 require('dotenv').config()
 const JWT_SECRET = process.env.JWT_SECRET
 
+const pubsub = new PubSub()
 const resolvers = {
     Query: {
         bookCount: async () => Book.collection.countDocuments(),
@@ -69,6 +71,8 @@ const resolvers = {
                     },
                 })
             }
+
+            pubsub.publish('BOOK_ADDED', { bookAdded: book })
             return book
         },
         addAuthor: async (root, args) => {
@@ -168,6 +172,11 @@ const resolvers = {
             }
 
             return { value: jwt.sign(userForToken, JWT_SECRET) }
+        },
+    },
+    Subscription: {
+        bookAdded: {
+            subscribe: () => pubsub.asyncIterator('BOOK_ADDED'),
         },
     },
 }
