@@ -6,7 +6,7 @@ import LoginForm from './components/LoginForm'
 import Notify from './components/Notify'
 import Recommendations from './components/Recommendations'
 import { useApolloClient, useQuery, useSubscription } from '@apollo/client'
-import { BOOK_ADDED } from './queries'
+import { BOOK_ADDED, ALL_BOOKS } from './queries'
 
 const App = () => {
     const [page, setPage] = useState('authors')
@@ -33,12 +33,29 @@ const App = () => {
         client.resetStore()
     }
 
-    useSubscription(BOOK_ADDED, {
+    /*useSubscription(BOOK_ADDED, {
       onData: ({ data }) => {
-        console.log(data)
-            alert('Book ' + data.data.bookAdded.title + ' by ' + data.data.bookAdded.author.name + ' added.')
-        },
-    })
+          const addedBook = data.data.bookAdded
+          console.log(data)
+          notify(
+              'Book ' +
+                  data.data.bookAdded.title +
+                  ' by ' +
+                  data.data.bookAdded.author.name +
+                  ' added.'
+          )
+          client.cache.updateQuery(
+              { query: ALL_BOOKS, variables: { genre: null } },
+              (data) => {
+                  console.log('updateQuery data: ' + data.allBooks)
+                  console.log('added book: ' + addedBook.title)
+                  return {
+                      allBooks: data.allBooks.concat(addedBook),
+                  }
+              }
+          )
+      },
+  })*/
     return (
         <div>
             <tr>
@@ -80,7 +97,7 @@ const App = () => {
             <Notify errorMessage={errorMessage} />
             <Authors show={page === 'authors'} setError={notify} />
 
-            <Books show={page === 'books'} setError={notify} />
+            <Books show={page === 'books'} setError={notify} client={client} />
 
             <NewBook show={page === 'add'} setError={notify} />
             {token ? (
