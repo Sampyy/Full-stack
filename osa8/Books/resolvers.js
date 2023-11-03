@@ -32,7 +32,8 @@ const resolvers = {
             return books.filter((book) => book.genres.includes(args.genre))
         },
         allAuthors: async () => {
-            return Author.find({})
+            const author = await Author.find({}).populate('bookCount')
+            return author
         },
         me: (root, args, context) => {
             //add
@@ -41,17 +42,17 @@ const resolvers = {
     },
     Author: {
         bookCount: async (root) => {
+            //console.log("root: " + root)
             const author = await Author.findOne({ name: root.name })
-            return (await Book.find({ author: author })).length
-            /*{
-      return books.filter((book) => book.author === root.name).length
-  },*/
+
+            //console.log('author: ' + author)
+            //return (await Book.find({ author: author })).length
+            console.log('Author')
+            return author.bookCount.length
         },
     },
     Mutation: {
         addBook: async (root, args, context) => {
-            const author = await Author.findOne({ name: args.author })
-            const book = new Book({ ...args, author: author })
             const currentUser = context.currentUser
             if (!currentUser) {
                 throw new GraphQLError('User not authenticated', {
@@ -60,7 +61,14 @@ const resolvers = {
                     },
                 })
             }
+            const author = await Author.findOne({ name: args.author })
+            const book = new Book({ ...args, author: author })
+
             try {
+                author.bookCount = author.bookCount.concat(book)
+
+                await author.save()
+
                 await book.save()
             } catch (error) {
                 throw new GraphQLError('Creating book failed', {
@@ -101,17 +109,7 @@ const resolvers = {
                 })
             }
             const author = await Author.findOne({ name: args.name })
-            /*try {
-                
-            } catch (error) {
-                throw new GraphQLError('Finding author failed', {
-                    extensions: {
-                        code: 'BAD_USER_INPUT',
-                        invalidArgs: args.name,
-                        error,
-                    },
-                })
-            }*/
+
             try {
                 author.born = args.setBornTo
                 await author.save()
@@ -158,7 +156,7 @@ const resolvers = {
                 username: args.username,
             })
 
-            console.log(user)
+            //console.log(user)
 
             if (!user || args.password !== 'secret') {
                 throw new GraphQLError('Incorrect username or password', {

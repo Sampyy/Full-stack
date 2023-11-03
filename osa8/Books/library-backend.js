@@ -73,7 +73,7 @@ const start = async () => {
                     )
 
                     const currentUser = await User.findById(decodedToken.id)
-                    console.log(currentUser)
+                    //console.log(currentUser)
                     return { currentUser }
                 }
             },
