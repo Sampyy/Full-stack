@@ -8,7 +8,32 @@ interface result {
     average: number;
 }
 
-const target: number = 2;
+interface input {
+    target: number;
+    input: number[];
+}
+
+const parseInput = (args: string[]): input => {
+    let input: number[] = [];
+    //console.log('args.length ' + args.length);
+    if (isNaN(Number(args[2]))) {
+        throw new Error(
+            `Not a number in arguments at position 2`
+        );
+    }
+    const target: number = Number(args[2]);
+    for (let i = 3; i < args.length; i++) {
+        console.log(`i = ${i} , args[i] = ${args[i]}`);
+        if (isNaN(Number(args[i]))) {
+            throw new Error(
+                `Not a number in arguments at position ${i}, args[i] : ${args[i]}`
+            );
+        }
+        input.push(Number(args[i]));
+    }
+    //console.log('input: ', input);
+    return {target, input};
+};
 
 const calculateRating = (averageExercise: number, target: number): number => {
     if (averageExercise > target * 2) {
@@ -36,7 +61,7 @@ const ratingDescription = (rating: number): string => {
     return description;
 };
 
-const calculateExercises = (values: number[]): result => {
+const calculateExercises = (target: number, values: number[]): result => {
     const trainingDays: number = values.reduce(
         (a, b) => (b > 0 ? a + 1 : a),
         0
@@ -60,4 +85,13 @@ const calculateExercises = (values: number[]): result => {
     };
 };
 
-console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1]));
+try {
+    const { target, input } = parseInput(process.argv);
+    console.log(calculateExercises(target, input));
+} catch (error: unknown) {
+    if (error instanceof Error) {
+        console.log('Error while running :', error);
+    }
+}
+
+//console.log(calculateExercises([3, 0, 2, 4.5, 0, 3, 1]));

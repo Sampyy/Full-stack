@@ -4,6 +4,8 @@ interface calcValues {
 }
 
 const parseArguments = (args: string[]): calcValues => {
+    if (args.length > 4) throw new Error('Too many arguments');
+    if (args.length < 4) throw new Error('Not enough arguments');
     if (!isNaN(Number(args[2])) && !isNaN(Number(args[3]))) {
         return {
             value1: Number(args[2]),
@@ -39,7 +41,9 @@ const calculateBmi = (value1: number, value2: number) => {
 };
 
 try {
-    console.log(calculateBmi(180, 74));
+    const { value1, value2 } = parseArguments(process.argv);
+    console.log(calculateBmi(value1, value2));
+    //console.log(calculateBmi(180, 74));
 } catch (error: unknown) {
     let errorMessage = 'Error while running';
     if (error instanceof Error) {
