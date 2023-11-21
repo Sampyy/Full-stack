@@ -21,21 +21,22 @@ app.get('/bmi', (req, res) => {
 });
 
 app.post('/exercises', (req, res) => {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment @typescript-eslint/no-unsafe-member-access
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
     const { daily_exercises, target } = req.body;
     if (!daily_exercises || !target) {
         res.send({ error: 'parameters missing' });
         return;
     }
-    
+
     try {
+        // eslint-disable-next-line @typescript-eslint/no-unsafe-call, @typescript-eslint/no-unsafe-member-access
         daily_exercises.map((value: number) => {
             if (isNaN(Number(value))) {
                 res.send({ error: 'malformatted parameters' });
             }
         });
     } catch (error: unknown) {
-        res.send({error:'malformatted parameters'})
+        res.send({ error: 'malformatted parameters' });
     }
 
     // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
