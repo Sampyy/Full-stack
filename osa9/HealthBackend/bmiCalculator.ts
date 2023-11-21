@@ -40,15 +40,20 @@ const calculateBmi = (value1: number, value2: number) => {
     }
 };
 
-try {
-    const { value1, value2 } = parseArguments(process.argv);
-    console.log(calculateBmi(value1, value2));
-    //console.log(calculateBmi(180, 74));
-} catch (error: unknown) {
-    let errorMessage = 'Error while running';
-    if (error instanceof Error) {
-        errorMessage += 'Error: ' + error.message;
+export const bmiCalculator = (value1: number, value2: number): string => {
+    if (value1 && value2) {
+        return calculateBmi(value1, value2);
     }
+    try {
+        const { value1, value2 } = parseArguments(process.argv);
+        return calculateBmi(value1, value2);
+        //console.log(calculateBmi(180, 74));
+    } catch (error: unknown) {
+        let errorMessage = 'Error while running';
+        if (error instanceof Error) {
+            errorMessage += 'Error: ' + error.message;
+        }
 
-    console.log(errorMessage);
-}
+        return errorMessage;
+    }
+};
