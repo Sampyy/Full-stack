@@ -1,3 +1,7 @@
+interface input {
+    target: number;
+    input: number[];
+}
 interface result {
     periodLength: number;
     trainingDays: number;
@@ -7,19 +11,11 @@ interface result {
     target: number;
     average: number;
 }
-
-interface input {
-    target: number;
-    input: number[];
-}
-
 const parseInput = (args: string[]): input => {
-    let input: number[] = [];
+    const input: number[] = [];
     //console.log('args.length ' + args.length);
     if (isNaN(Number(args[2]))) {
-        throw new Error(
-            `Not a number in arguments at position 2`
-        );
+        throw new Error(`Not a number in arguments at position 2`);
     }
     const target: number = Number(args[2]);
     for (let i = 3; i < args.length; i++) {
@@ -32,7 +28,7 @@ const parseInput = (args: string[]): input => {
         input.push(Number(args[i]));
     }
     //console.log('input: ', input);
-    return {target, input};
+    return { target, input };
 };
 
 const calculateRating = (averageExercise: number, target: number): number => {
@@ -61,7 +57,7 @@ const ratingDescription = (rating: number): string => {
     return description;
 };
 
-const calculateExercises = (target: number, values: number[]): result => {
+export const calculateExercises = (target: number, values: number[]): result => {
     const trainingDays: number = values.reduce(
         (a, b) => (b > 0 ? a + 1 : a),
         0
