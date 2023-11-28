@@ -1,12 +1,15 @@
 import { useParams } from 'react-router-dom';
 import patientService from '../../services/patients';
-import { Patient } from '../../types';
+import { Diagnosis, Patient } from '../../types';
 import { useEffect, useState } from 'react';
 import { Male, Female } from '@mui/icons-material';
 import { Container, Typography } from '@mui/material';
-import Diagnosis from './Diagnosis';
+import EntryComponent from './EntryComponent';
+interface Props {
+    diagnoses: Diagnosis[];
+}
 
-const PatientPage = () => {
+const PatientPage = ({ diagnoses }: Props) => {
     const [patient, setPatient] = useState<Patient>();
     const findPatient = async (id: string) => {
         const foundPatient = await patientService.getPatient(id);
@@ -48,10 +51,15 @@ const PatientPage = () => {
 
             <Typography>ssn: {patient.ssn}</Typography>
             <Typography>occupation: {patient.occupation}</Typography>
-
+            <h2>entries</h2>
             {patient.entries &&
                 patient.entries.map((entry) => {
-                    return <Diagnosis entry={entry}></Diagnosis>;
+                    return (
+                        <EntryComponent
+                            entry={entry}
+                            diagnoses={diagnoses}
+                        ></EntryComponent>
+                    );
                 })}
         </Container>
     );
