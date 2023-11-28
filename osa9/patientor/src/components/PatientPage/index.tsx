@@ -3,7 +3,7 @@ import patientService from '../../services/patients';
 import { Diagnosis, Patient } from '../../types';
 import { useEffect, useState } from 'react';
 import { Male, Female } from '@mui/icons-material';
-import { Container, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import EntryComponent from './EntryComponent';
 interface Props {
     diagnoses: Diagnosis[];
@@ -41,10 +41,13 @@ const PatientPage = ({ diagnoses }: Props) => {
         }
     };
 
-    const genderIcon = getGenderIcon();
+    let genderIcon = null;
+    if (patient) {
+        genderIcon = getGenderIcon();
+    }
     //finish patient page
     return (
-        <Container>
+        <>
             <h1>
                 {patient.name} {genderIcon}
             </h1>
@@ -53,15 +56,13 @@ const PatientPage = ({ diagnoses }: Props) => {
             <Typography>occupation: {patient.occupation}</Typography>
             <h2>entries</h2>
             {patient.entries &&
-                patient.entries.map((entry) => {
-                    return (
-                        <EntryComponent
-                            entry={entry}
-                            diagnoses={diagnoses}
-                        ></EntryComponent>
-                    );
-                })}
-        </Container>
+                patient.entries.map((entry) => (
+                    <EntryComponent
+                        entry={entry}
+                        diagnoses={diagnoses}
+                    ></EntryComponent>
+                ))}
+        </>
     );
 };
 

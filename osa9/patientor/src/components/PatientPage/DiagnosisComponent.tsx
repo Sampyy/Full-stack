@@ -1,4 +1,3 @@
-import { Typography } from '@mui/material';
 import { Diagnosis } from '../../types';
 import { useState, useEffect } from 'react';
 interface Props {
@@ -22,9 +21,9 @@ const DiagnosisComponent = ({ diagnosisCode, diagnoses }: Props) => {
     }, []);
 
     return (
-        <Typography>
+        <p>
             {diagnosisCode} {diagnosisText}
-        </Typography>
+        </p>
     );
 };
 export default DiagnosisComponent;
