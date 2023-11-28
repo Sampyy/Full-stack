@@ -1,4 +1,6 @@
-import { Gender, NewPatient } from './types';
+/* eslint-disable @typescript-eslint/no-unsafe-call */
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+import { Entry, Gender, NewPatient } from './types';
 
 const parseName = (text: unknown): string => {
     if (!text || !isString(text)) {
@@ -35,6 +37,28 @@ const parseGender = (gender: unknown): Gender => {
     return gender;
 };
 
+const parseEntries = (entries: Entry[]): Entry[] => {
+    if (!entries) {
+        throw new Error('missing entries');
+    }
+    return entries.map((entry) => parseEntry(entry));
+};
+
+const parseEntry = (entry: Entry) => {
+    if (!entry || !entry.type || !isEntryType(entry.type)) {
+        throw new Error('Entries missing or incorrect: ');
+    }
+    console.log(entry);
+    return entry;
+};
+
+const isEntryType = (type: unknown): boolean => {
+    if (!type || !isString(type)) {
+        throw new Error('Entry doesnt contain type');
+    }
+    return ['Hospital', 'OccupationalHealthcare', 'HealthCheck'].includes(type);
+};
+
 const isString = (text: unknown): text is string => {
     return typeof text === 'string' || text instanceof String;
 };
@@ -58,7 +82,8 @@ const toNewPatient = (object: unknown): NewPatient => {
         'dateOfBirth' in object &&
         'ssn' in object &&
         'gender' in object &&
-        'occupation' in object
+        'occupation' in object &&
+        'entries' in object
     ) {
         const newPatient: NewPatient = {
             name: parseName(object.name),
@@ -66,6 +91,7 @@ const toNewPatient = (object: unknown): NewPatient => {
             ssn: parseSSN(object.ssn),
             gender: parseGender(object.gender),
             occupation: parseOccupation(object.occupation),
+            entries: parseEntries(object.entries as Entry[]),
         };
         return newPatient;
     }

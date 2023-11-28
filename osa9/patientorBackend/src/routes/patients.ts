@@ -10,6 +10,22 @@ router.get('/', (_req, res) => {
     res.send(patientService.getAllPatientsNonSensitive());
 });
 
+router.get('/sensitive', (_req, res) => {
+    res.send(patientService.getAllPatients());
+});
+
+router.get('/:id', (req, res) => {
+    try {
+        res.send(patientService.getPatient(req.params.id));
+    } catch (error: unknown) {
+        let errorMessage: string = 'Error occured';
+        if (error instanceof Error) {
+            errorMessage += error;
+        }
+        res.status(404).send(errorMessage);
+    }
+});
+
 router.post('/', (req, res) => {
     try {
         const newPatient = toNewPatient(req.body);
