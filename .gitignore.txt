@@ -10,3 +10,4 @@
 ./osa5/bloglist-frontend/.env.test.local
 ./osa5/bloglist-frontend/.env.production.local
 ./osa5/bloglist-frontend//coverage
+./osa9/patientorBackend/build/

@@ -6,6 +6,14 @@ import DiaryForm from './components/DiaryForm';
 
 function App() {
     const [diaries, setDiaries] = useState<DiaryEntry[]>([]);
+    const [error, setError] = useState<string>('');
+
+    const changeError = (error: string) => {
+        setError(error);
+        setTimeout(() => {
+            setError('');
+        }, 5000);
+    };
 
     useEffect(() => {
         diaryservice.getAllDiaryEntries().then((data) => setDiaries(data));
@@ -13,7 +21,12 @@ function App() {
 
     return (
         <div>
-            <DiaryForm diaries={diaries} setDiaries={setDiaries} />
+            <DiaryForm
+                diaries={diaries}
+                setDiaries={setDiaries}
+                error={error}
+                setError={changeError}
+            />
 
             <Diaries diaries={diaries} />
         </div>

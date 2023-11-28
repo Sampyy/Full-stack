@@ -2,10 +2,9 @@ import { Patient, NoSSNPatient, NewPatient } from '../types';
 import { v1 as uuid } from 'uuid';
 
 import patients from '../../data/patientData';
-import toNewPatient from '../utils';
 
 const getAllPatients = (): Patient[] => {
-    return patients.map((patient) => toNewPatient(patient));
+    return patients;
 };
 
 const getAllPatientsNonSensitive = (): NoSSNPatient[] => {
@@ -19,7 +18,7 @@ const getAllPatientsNonSensitive = (): NoSSNPatient[] => {
 };
 
 const getPatient = (id: string) => {
-    console.log(patients);
+
     try {
         const patient = patients.find(
             (patient) => patient.id === id.toString()

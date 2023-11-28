@@ -4,6 +4,7 @@ import { Patient } from '../../types';
 import { useEffect, useState } from 'react';
 import { Male, Female } from '@mui/icons-material';
 import { Container, Typography } from '@mui/material';
+import Diagnosis from './Diagnosis';
 
 const PatientPage = () => {
     const [patient, setPatient] = useState<Patient>();
@@ -33,7 +34,7 @@ const PatientPage = () => {
             case 'female':
                 return <Female />;
             default:
-                return <p>?</p>;
+                return '?';
         }
     };
 
@@ -47,6 +48,11 @@ const PatientPage = () => {
 
             <Typography>ssn: {patient.ssn}</Typography>
             <Typography>occupation: {patient.occupation}</Typography>
+
+            {patient.entries &&
+                patient.entries.map((entry) => {
+                    return <Diagnosis entry={entry}></Diagnosis>;
+                })}
         </Container>
     );
 };

@@ -2,7 +2,7 @@ import { CoursePart } from '../types';
 
 const totalExercises = (courseParts: CoursePart[]) => {
     return courseParts.reduce(
-        (sum: number, part: CoursePart) => (part.exerciseCount += sum),
+        (sum: number, part: CoursePart) => (sum += part.exerciseCount),
         0
     );
 };
