@@ -21,9 +21,9 @@ const DiagnosisComponent = ({ diagnosisCode, diagnoses }: Props) => {
     }, []);
 
     return (
-        <p>
+        <li>
             {diagnosisCode} {diagnosisText}
-        </p>
+        </li>
     );
 };
 export default DiagnosisComponent;

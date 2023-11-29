@@ -20,11 +20,13 @@ const OccupationalHealthcareComponent = ({
                 {entry.description}
             </Typography>
             {entry.diagnosisCodes?.map((diagnosis) => (
-                <DiagnosisComponent
-                    key={diagnosis}
-                    diagnosisCode={diagnosis}
-                    diagnoses={diagnoses}
-                />
+                <ul>
+                    <DiagnosisComponent
+                        key={diagnosis}
+                        diagnosisCode={diagnosis}
+                        diagnoses={diagnoses}
+                    />
+                </ul>
             ))}
             <Typography>Diagnose by {entry.specialist}</Typography>
         </Container>

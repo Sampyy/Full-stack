@@ -3,7 +3,7 @@ import patientService from '../../services/patients';
 import { Diagnosis, Patient } from '../../types';
 import { useEffect, useState } from 'react';
 import { Male, Female } from '@mui/icons-material';
-import { Typography } from '@mui/material';
+import { Button, Typography } from '@mui/material';
 import EntryComponent from './EntryComponent';
 interface Props {
     diagnoses: Diagnosis[];
@@ -58,10 +58,12 @@ const PatientPage = ({ diagnoses }: Props) => {
             {patient.entries &&
                 patient.entries.map((entry) => (
                     <EntryComponent
+                        key={entry.id}
                         entry={entry}
                         diagnoses={diagnoses}
                     ></EntryComponent>
                 ))}
+            <Button variant="contained">Add New Entry</Button>
         </>
     );
 };

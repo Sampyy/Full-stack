@@ -3,6 +3,7 @@
 import express from 'express';
 import patientService from '../services/patientService';
 import toNewPatient from '../utils';
+import { toNewEntry } from '../utils';
 
 const router = express.Router();
 
@@ -38,6 +39,20 @@ router.post('/', (req, res) => {
             errorMessage += error;
         }
 
+        res.status(400).send(errorMessage);
+    }
+});
+
+router.post('/:id/entries', (req, res) => {
+    try {
+        const newEntry = toNewEntry(req.body);
+        const addedEntry = patientService.addEntry(req.params.id, newEntry);
+        res.json(addedEntry);
+    } catch (error: unknown) {
+        let errorMessage: string = 'Error occured';
+        if (error instanceof Error) {
+            errorMessage += error;
+        }
         res.status(400).send(errorMessage);
     }
 });

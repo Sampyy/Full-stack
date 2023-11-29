@@ -7,4 +7,6 @@ router.get('/', (_req, res) => {
     res.send(diagnosisService.getAllDiagnoses());
 });
 
+
+
 export default router;

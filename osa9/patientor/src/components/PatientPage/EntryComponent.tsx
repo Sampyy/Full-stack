@@ -1,4 +1,3 @@
-
 import { Diagnosis, Entry } from '../../types';
 import HospitalComponent from './HospitalComponent';
 import OccupationalHealthcareComponent from './OccupationalHealthcareComponent';
