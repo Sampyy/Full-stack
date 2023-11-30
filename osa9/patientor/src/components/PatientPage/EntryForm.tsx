@@ -282,18 +282,23 @@ const EntryForm = ({
                     />
                 )}
                 {type === 'HealthCheck' && (
-                    <TextField
-                        InputLabelProps={{
-                            shrink: true,
-                        }}
-                        variant="standard"
+                    <InputLabel>Healthcheck Rating</InputLabel>
+                )}
+                {type === 'HealthCheck' && (
+                    <Select
                         label="Healthcheck rating"
-                        fullWidth
+                        variant="standard"
                         value={healthCheckRating}
                         onChange={({ target }) =>
                             setHealthCheckRating(target.value)
                         }
-                    />
+                        placeholder="Healthcheck Rating"
+                    >
+                        <MenuItem value={0}>Healthy</MenuItem>
+                        <MenuItem value={1}>Low Risk</MenuItem>
+                        <MenuItem value={2}>High Risk</MenuItem>
+                        <MenuItem value={3}>Critical Risk</MenuItem>
+                    </Select>
                 )}
                 <InputLabel>Diagnosis Codes</InputLabel>
                 <Select
@@ -302,7 +307,7 @@ const EntryForm = ({
                     variant="standard"
                     value={diagnosisCodes}
                     onChange={handleSelect}
-                    placeholder='Diagnosis Codes'
+                    placeholder="Diagnosis Codes"
                 >
                     {diagnoses.map((diagnosis) => (
                         <MenuItem key={diagnosis.code} value={diagnosis.code}>
