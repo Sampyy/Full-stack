@@ -53,6 +53,10 @@ const EntryForm = ({
         setDischargeDate('');
         setDischargeCriteria('');
         setDiagnosisCodes(['']);
+        setSickLeaveEnd('');
+        setSickLeaveStart('');
+        setHealthCheckRating('');
+        setEmployerName('');
     };
 
     /*const parseDiagnosisCodes = () => {
