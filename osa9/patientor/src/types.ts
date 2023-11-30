@@ -63,7 +63,7 @@ export type PatientFormValues = Omit<Patient, 'id' | 'entries'>;
 export type UnionOmit<T, K extends string | number | symbol> = T extends unknown
     ? Omit<T, K>
     : never;
-export type newEntry = UnionOmit<Entry, 'id'>;
+export type NewEntry = UnionOmit<Entry, 'id'>;
 export type Entry =
     | HospitalEntry
     | OccupationalHealthcareEntry

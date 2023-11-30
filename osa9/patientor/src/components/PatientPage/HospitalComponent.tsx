@@ -18,6 +18,11 @@ const HospitalComponent = ({ entry, diagnoses }: Props) => {
                 {entry.description}
             </Typography>
 
+            <Typography>Discharge date: {entry.discharge.date}</Typography>
+            <Typography>
+                Discharge criteria: {entry.discharge.criteria}
+            </Typography>
+
             {entry.diagnosisCodes?.map((diagnosis) => (
                 <DiagnosisComponent
                     key={diagnosis}

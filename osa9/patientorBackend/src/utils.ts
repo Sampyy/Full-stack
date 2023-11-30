@@ -18,6 +18,27 @@ const parseName = (text: unknown): string => {
     return text;
 };
 
+const parseSpecialist = (text: unknown): string => {
+    if (!text || !isString(text)) {
+        throw new Error('incorrect or missing specialist');
+    }
+    return text;
+};
+
+const parseDescription = (text: unknown): string => {
+    if (!text || !isString(text)) {
+        throw new Error('incorrect or missing description');
+    }
+    return text;
+};
+
+const parseEmployerName = (text: unknown): string => {
+    if (!text || !isString(text)) {
+        throw new Error('incorrect or missing employer name');
+    }
+    return text;
+};
+
 const parseSSN = (ssn: unknown): string => {
     if (!ssn || !isString(ssn)) {
         throw new Error('incorrect or missing ssn');
@@ -91,12 +112,20 @@ const parseDischarge = (object: unknown): Discharge => {
     return object.discharge;
 };
 
+const parseDischargeDate = (text: unknown): string => {
+    if (!text || !isString(text) || !isDate(text)) {
+        throw new Error(`incorrect or missing discharge date: ${text}`);
+    }
+    return text;
+};
+
 const isDischarge = (discharge: unknown): discharge is Discharge => {
     if (
         !discharge ||
         typeof discharge !== 'object' ||
         !('date' in discharge) ||
-        !('criteria' in discharge)
+        !('criteria' in discharge) ||
+        !parseDischargeDate(discharge.date)
     ) {
         throw new Error('Incorrect Discharge');
     }
@@ -119,6 +148,9 @@ const parseSickLeave = (object: unknown): SickLeave | undefined => {
         !('sickLeave' in object) ||
         !isSickLeave(object.sickLeave)
     ) {
+        throw new Error('something wrong with sickleave');
+    }
+    if (object.sickLeave.startDate === '' && object.sickLeave.endDate === '') {
         return undefined;
     }
     return object.sickLeave;
@@ -155,6 +187,18 @@ const isSickLeave = (sickLeave: unknown): sickLeave is SickLeave => {
         !('endDate' in sickLeave)
     ) {
         throw new Error('Incorrect sickLeave');
+    }
+    if (!('startDate' in sickLeave) || !('endDate' in sickLeave)) {
+        throw new Error('Incorrect sickLeave');
+    }
+    if (sickLeave.startDate === '' && sickLeave.endDate === '') {
+        return true;
+    }
+    if (!isString(sickLeave.startDate) || !Date.parse(sickLeave.startDate)) {
+        throw new Error('Incorrect sickleave startdate');
+    }
+    if (!isString(sickLeave.endDate) || !Date.parse(sickLeave.endDate)) {
+        throw new Error('Incorrect sickleave enddate');
     }
     return true;
 };
@@ -219,10 +263,10 @@ export const toNewEntry = (object: unknown): NewEntry => {
     ) {
         const newEntry: NewEntry = {
             date: parseDateOfBirth(object.date),
-            specialist: parseName(object.specialist),
-            description: parseName(object.description),
-            diagnosisCodes: parseDiagnosisCodes(object.diagnosisCodes),
-            discharge: parseDischarge(object.discharge),
+            specialist: parseSpecialist(object.specialist),
+            description: parseDescription(object.description),
+            diagnosisCodes: parseDiagnosisCodes(object),
+            discharge: parseDischarge(object),
             type: 'Hospital',
         };
         return newEntry;
@@ -230,26 +274,7 @@ export const toNewEntry = (object: unknown): NewEntry => {
 
     if (
         'type' in object &&
-        'date' in object &&
-        'specialist' in object &&
-        'description' in object &&
-        'diagnosisCodes' in object &&
-        'employerName' in object &&
-        'sickLeave' in object
-    ) {
-        const newEntry: NewEntry = {
-            date: parseDateOfBirth(object.date),
-            specialist: parseName(object.specialist),
-            description: parseName(object.description),
-            diagnosisCodes: parseDiagnosisCodes(object.diagnosisCodes),
-            employerName: parseName(object.employerName),
-            sickLeave: parseSickLeave(object.sickLeave),
-            type: 'OccupationalHealthcare',
-        };
-        return newEntry;
-    }
-    if (
-        'type' in object &&
+        'sickLeave' in object &&
         'date' in object &&
         'specialist' in object &&
         'description' in object &&
@@ -258,10 +283,11 @@ export const toNewEntry = (object: unknown): NewEntry => {
     ) {
         const newEntry: NewEntry = {
             date: parseDateOfBirth(object.date),
-            specialist: parseName(object.specialist),
-            description: parseName(object.description),
+            specialist: parseSpecialist(object.specialist),
+            description: parseDescription(object.description),
             diagnosisCodes: parseDiagnosisCodes(object),
-            employerName: parseName(object.employerName),
+            employerName: parseEmployerName(object.employerName),
+            sickLeave: parseSickLeave(object),
             type: 'OccupationalHealthcare',
         };
         return newEntry;
@@ -276,10 +302,10 @@ export const toNewEntry = (object: unknown): NewEntry => {
     ) {
         const newEntry: NewEntry = {
             date: parseDateOfBirth(object.date),
-            specialist: parseName(object.specialist),
-            description: parseName(object.description),
-            diagnosisCodes: parseDiagnosisCodes(object.diagnosisCodes) || undefined,
-            healthCheckRating: parseHealthCheckRating(object.healthCheckRating),
+            specialist: parseSpecialist(object.specialist),
+            description: parseDescription(object.description),
+            diagnosisCodes: parseDiagnosisCodes(object) || undefined,
+            healthCheckRating: parseHealthCheckRating(object),
             type: 'HealthCheck',
         };
         return newEntry;

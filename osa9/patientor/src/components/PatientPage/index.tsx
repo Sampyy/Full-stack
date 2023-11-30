@@ -1,16 +1,18 @@
 import { useParams } from 'react-router-dom';
 import patientService from '../../services/patients';
-import { Diagnosis, Patient } from '../../types';
+import { Diagnosis, Entry, Patient } from '../../types';
 import { useEffect, useState } from 'react';
 import { Male, Female } from '@mui/icons-material';
-import { Button, Typography } from '@mui/material';
+import { Typography } from '@mui/material';
 import EntryComponent from './EntryComponent';
+import EntryForm from './EntryForm';
 interface Props {
     diagnoses: Diagnosis[];
 }
 
 const PatientPage = ({ diagnoses }: Props) => {
     const [patient, setPatient] = useState<Patient>();
+    const [entries, setEntries] = useState<Entry[]>();
     const findPatient = async (id: string) => {
         const foundPatient = await patientService.getPatient(id);
         setPatient(foundPatient);
@@ -22,6 +24,12 @@ const PatientPage = ({ diagnoses }: Props) => {
             findPatient(id);
         }
     }, [id]);
+
+    useEffect(() => {
+        if (patient) {
+            setEntries(patient.entries);
+        }
+    },[patient]);
     if (!id) {
         return <p>Patient not found</p>;
     }
@@ -54,16 +62,17 @@ const PatientPage = ({ diagnoses }: Props) => {
 
             <Typography>ssn: {patient.ssn}</Typography>
             <Typography>occupation: {patient.occupation}</Typography>
+            <EntryForm id={patient.id} entries={patient.entries} setEntries={setEntries} />
             <h2>entries</h2>
-            {patient.entries &&
-                patient.entries.map((entry) => (
+            {entries &&
+                entries.map((entry) => (
                     <EntryComponent
                         key={entry.id}
                         entry={entry}
                         diagnoses={diagnoses}
+                        
                     ></EntryComponent>
                 ))}
-            <Button variant="contained">Add New Entry</Button>
         </>
     );
 };
