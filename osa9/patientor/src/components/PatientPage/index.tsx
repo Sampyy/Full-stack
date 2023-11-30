@@ -29,7 +29,7 @@ const PatientPage = ({ diagnoses }: Props) => {
         if (patient) {
             setEntries(patient.entries);
         }
-    },[patient]);
+    }, [patient]);
     if (!id) {
         return <p>Patient not found</p>;
     }
@@ -62,7 +62,12 @@ const PatientPage = ({ diagnoses }: Props) => {
 
             <Typography>ssn: {patient.ssn}</Typography>
             <Typography>occupation: {patient.occupation}</Typography>
-            <EntryForm id={patient.id} entries={patient.entries} setEntries={setEntries} />
+            <EntryForm
+                id={patient.id}
+                entries={patient.entries}
+                setEntries={setEntries}
+                diagnoses={diagnoses}
+            />
             <h2>entries</h2>
             {entries &&
                 entries.map((entry) => (
@@ -70,7 +75,6 @@ const PatientPage = ({ diagnoses }: Props) => {
                         key={entry.id}
                         entry={entry}
                         diagnoses={diagnoses}
-                        
                     ></EntryComponent>
                 ))}
         </>

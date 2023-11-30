@@ -22,7 +22,6 @@ const EntryComponent = ({ entry, diagnoses }: Props) => {
                     diagnoses={diagnoses}
                 />
             );
-
         case 'HealthCheck':
             return <HealthCheckComponent entry={entry} diagnoses={diagnoses} />;
         default:

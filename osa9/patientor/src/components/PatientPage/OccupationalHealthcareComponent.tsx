@@ -27,15 +27,12 @@ const OccupationalHealthcareComponent = ({
 
             {entry.sickLeave?.endDate && (
                 <Typography>
-                    <Typography>
                         Sickleave end date: {entry.sickLeave.endDate}
-                    </Typography>
                 </Typography>
             )}
-            {entry.diagnosisCodes?.map((diagnosis) => (
-                <ul>
+            {entry.diagnosisCodes && entry.diagnosisCodes.map((diagnosis) => (
+                <ul key={diagnosis}>
                     <DiagnosisComponent
-                        key={diagnosis}
                         diagnosisCode={diagnosis}
                         diagnoses={diagnoses}
                     />

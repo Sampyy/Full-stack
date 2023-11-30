@@ -22,14 +22,16 @@ const HospitalComponent = ({ entry, diagnoses }: Props) => {
             <Typography>
                 Discharge criteria: {entry.discharge.criteria}
             </Typography>
-
-            {entry.diagnosisCodes?.map((diagnosis) => (
-                <DiagnosisComponent
-                    key={diagnosis}
-                    diagnosisCode={diagnosis}
-                    diagnoses={diagnoses}
-                />
-            ))}
+            <ul>
+                {entry.diagnosisCodes &&
+                    entry.diagnosisCodes.map((diagnosis) => (
+                        <DiagnosisComponent
+                            key={diagnosis}
+                            diagnosisCode={diagnosis}
+                            diagnoses={diagnoses}
+                        />
+                    ))}
+            </ul>
             <Typography>Diagnose by {entry.specialist}</Typography>
         </Container>
     );

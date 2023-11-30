@@ -1,17 +1,34 @@
-import { Button, Container, TextField, Typography } from '@mui/material';
+import {
+    Button,
+    Container,
+    InputLabel,
+    MenuItem,
+    Select,
+    SelectChangeEvent,
+    TextField,
+    Typography,
+} from '@mui/material';
 import { SyntheticEvent, useState } from 'react';
 import patientService from '../../services/patients';
-import { Entry, HealthCheckRating, NewEntry, SickLeave } from '../../types';
+import {
+    Diagnosis,
+    Entry,
+    HealthCheckRating,
+    NewEntry,
+    SickLeave,
+} from '../../types';
 import { AxiosError } from 'axios';
 //add others using typeswitch to controll what fields are, FIX ENTRIES NOT SHOWING UP
 const EntryForm = ({
     id,
     entries,
     setEntries,
+    diagnoses,
 }: {
     id: string;
     entries: Entry[];
     setEntries: React.Dispatch<React.SetStateAction<Entry[] | undefined>>;
+    diagnoses: Diagnosis[];
 }) => {
     const [type, setType] = useState<
         'Hospital' | 'OccupationalHealthcare' | 'HealthCheck'
@@ -27,7 +44,7 @@ const EntryForm = ({
     const [healthCheckRating, setHealthCheckRating] = useState('');
 
     const [error, setError] = useState('');
-    const [diagnosisCodes, setDiagnosisCodes] = useState<string>('');
+    const [diagnosisCodes, setDiagnosisCodes] = useState<string[]>([]);
 
     const resetForm = () => {
         setDescription('');
@@ -35,14 +52,20 @@ const EntryForm = ({
         setSpecialist('');
         setDischargeDate('');
         setDischargeCriteria('');
-        setDiagnosisCodes('');
+        setDiagnosisCodes(['']);
     };
 
-    const parseDiagnosisCodes = () => {
+    /*const parseDiagnosisCodes = () => {
         const splitCodes = diagnosisCodes.split(',');
         return splitCodes.map((code) => code.trim());
-    };
+    };*/
 
+    const handleSelect = (event: SelectChangeEvent<typeof diagnosisCodes>) => {
+        const {
+            target: { value },
+        } = event;
+        setDiagnosisCodes(typeof value === 'string' ? value.split(',') : value);
+    };
     const createEntry = async (entry: NewEntry) => {
         try {
             const createdEntry = await patientService.createEntry(id, entry);
@@ -68,8 +91,6 @@ const EntryForm = ({
     const addEntry = async (event: SyntheticEvent) => {
         event.preventDefault();
         try {
-            const diagnosisCodes = parseDiagnosisCodes();
-            console.log('diagnosisCodes: ', diagnosisCodes);
             switch (type) {
                 case 'Hospital':
                     const discharge = {
@@ -135,22 +156,34 @@ const EntryForm = ({
 
     return (
         <Container style={{ border: 'dotted' }}>
-            <Button variant="contained" onClick={() => setType('Hospital')}>
+            <Button
+                style={{ marginTop: 10 }}
+                variant="contained"
+                onClick={() => setType('Hospital')}
+            >
                 Hospital
             </Button>
             <Button
+                style={{ marginTop: 10 }}
                 variant="contained"
                 onClick={() => setType('OccupationalHealthcare')}
             >
                 Occupational
             </Button>
-            <Button variant="contained" onClick={() => setType('HealthCheck')}>
+            <Button
+                style={{ marginTop: 10 }}
+                variant="contained"
+                onClick={() => setType('HealthCheck')}
+            >
                 HealthCheck
             </Button>
             <h3>New entry</h3>
             {error && <Typography style={{ color: 'red' }}>{error}</Typography>}
             <form onSubmit={(event) => addEntry(event)}>
                 <TextField
+                    InputLabelProps={{
+                        shrink: true,
+                    }}
                     label="Description"
                     fullWidth
                     value={description}
@@ -158,6 +191,9 @@ const EntryForm = ({
                     onChange={({ target }) => setDescription(target.value)}
                 />
                 <TextField
+                    InputLabelProps={{
+                        shrink: true,
+                    }}
                     variant="standard"
                     label="Date"
                     fullWidth
@@ -166,15 +202,23 @@ const EntryForm = ({
                     onChange={({ target }) => setDate(target.value)}
                 />
                 <TextField
+                    InputLabelProps={{
+                        shrink: true,
+                    }}
                     label="Specialist"
+                    variant="standard"
                     fullWidth
                     value={specialist}
                     onChange={({ target }) => setSpecialist(target.value)}
                 />
                 {type === 'Hospital' && (
                     <TextField
-                        label="Discharge date"
+                        label="Discharge Date"
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
                         fullWidth
+                        variant="standard"
                         value={dischargeDate}
                         type="date"
                         onChange={({ target }) =>
@@ -184,7 +228,11 @@ const EntryForm = ({
                 )}
                 {type === 'Hospital' && (
                     <TextField
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
                         label="Discharge Criteria"
+                        variant="standard"
                         fullWidth
                         value={dischargeCriteria}
                         onChange={({ target }) =>
@@ -194,6 +242,10 @@ const EntryForm = ({
                 )}
                 {type === 'OccupationalHealthcare' && (
                     <TextField
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        variant="standard"
                         label="Employer name"
                         fullWidth
                         value={employerName}
@@ -202,6 +254,10 @@ const EntryForm = ({
                 )}
                 {type === 'OccupationalHealthcare' && (
                     <TextField
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        variant="standard"
                         label="Sickleave start"
                         fullWidth
                         value={sickLeaveStart}
@@ -214,6 +270,10 @@ const EntryForm = ({
 
                 {type === 'OccupationalHealthcare' && (
                     <TextField
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        variant="standard"
                         label="Sickleave end"
                         fullWidth
                         type="date"
@@ -223,6 +283,10 @@ const EntryForm = ({
                 )}
                 {type === 'HealthCheck' && (
                     <TextField
+                        InputLabelProps={{
+                            shrink: true,
+                        }}
+                        variant="standard"
                         label="Healthcheck rating"
                         fullWidth
                         value={healthCheckRating}
@@ -231,12 +295,21 @@ const EntryForm = ({
                         }
                     />
                 )}
-                <TextField
-                    label="Diagnosis codes"
-                    fullWidth
+                <InputLabel>Diagnosis Codes</InputLabel>
+                <Select
+                    label="Diagnosis Codes"
+                    multiple
+                    variant="standard"
                     value={diagnosisCodes}
-                    onChange={({ target }) => setDiagnosisCodes(target.value)}
-                />
+                    onChange={handleSelect}
+                    placeholder='Diagnosis Codes'
+                >
+                    {diagnoses.map((diagnosis) => (
+                        <MenuItem key={diagnosis.code} value={diagnosis.code}>
+                            {diagnosis.code}
+                        </MenuItem>
+                    ))}
+                </Select>
 
                 <Button onClick={() => resetForm()}>Cancel</Button>
                 <Button
